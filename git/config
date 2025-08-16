@@ -1,0 +1,22 @@
+[user]
+  name = Alexander Kingston
+  email = akingston@stealthpath.com
+  username = adk-stealthpath
+  signingkey = ~/.ssh/github_signing.pub
+[init]
+  defaultBranch = main
+[core]
+  editor = nvim
+  whitespace = fix,trailing-space
+[gpg]
+  format = ssh
+[gpg.ssh]
+  allowedSignersFile = ~/.ssh/allowed_signers
+[commit]
+  gpgsign = true
+[tag]
+  gpgsign = true
+[url "git@github.com:stealthpath/"]
+	insteadOf = sp:
+[url "git@github.com:"]
+	insteadOf = gh:

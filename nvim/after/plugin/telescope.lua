@@ -1,0 +1,10 @@
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>tf', builtin.find_files, {})
+vim.keymap.set('n', '<leader>ts', builtin.lsp_document_symbols, {})
+vim.keymap.set('n', '<leader>td', builtin.diagnostics, {})
+vim.keymap.set('n', '<leader>ti', builtin.lsp_implementations, {})
+vim.keymap.set('n', '<leader>tg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>tj', builtin.jumplist, {})
+
+-- vim.keymap.set('n', '<leader>tn', function() require('telescope').extensions.notify.notify({}) end )
