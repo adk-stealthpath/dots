@@ -30,7 +30,7 @@ alias ll="eza --time-style=long-iso -l --changed"
 # k9s proper loading 
 load_k9s() {
     context=$(kubectl config get-contexts | awk '{print $2}' | sed -n '2 p')
-    k9s --kubeconfig $HOME/.kube/k0s/config.yaml --context $context --command contexts
+    k9s --kubeconfig /opt/k8s-kubeconfig/.kube/k0s/merged.yaml --context $context --command contexts --headless
 }
 
 alias kl="load_k9s"

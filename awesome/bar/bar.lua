@@ -209,7 +209,7 @@ local function create_right_section()
     -- Volume widgt
      local volume_widget = wibox.widget.textbox()
      local function update_vol()
-        awful.spawn.with_line_callback('bash -c "awk -F\"[][]\" \'/dB/ { print $2 }\' <(amixer -c1 sget Master)"', {
+        awful.spawn.with_line_callback('bash -c "awk -F\"[][]\" \'/dB/ { print $2 }\' <(amixer)"', {
             stdout = function(line)
                 volume_widget:set_markup(string.format('<span foreground="%s"> %s</span>', colors.text, line))
             end,

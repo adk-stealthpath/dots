@@ -141,15 +141,28 @@ awful.rules.rules = {
                      placement = awful.placement.no_overlap+awful.placement.no_offscreen
      }
     },
-
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" }
       }, properties = { titlebars_enabled = false }
     },
-
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    {
+        rule = { class = "Thunar" },
+        properties = { 
+            floating = true,
+            placement = awful.placement.centered,
+            width = 800,
+            height = 600
+        }
+    },
+    {
+        rule = { class = "Slack", name = ".*[Hh]uddle.*" },
+        properties = { 
+            floating = true,
+            placement = awful.placement.centered,
+            width = 800,
+            height = 600
+        }
+    }
 }
 -- }}}
 

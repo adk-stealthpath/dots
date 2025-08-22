@@ -3,7 +3,7 @@ local gears = require("gears")
 local awful = require("awful")
 
 
-beautiful.font = "DejaVuSansM Nerd Font Mono 12"
+beautiful.font = "DejaVuSansM Nerd Font Mono 20"
 beautiful.wallpaper = "/home/akingston/.config/awesome/theme/1920x1080.jpg"
 beautiful.init("/home/akingston/.config/awesome/theme/default.lua")
 function set_wallpaper(s)
