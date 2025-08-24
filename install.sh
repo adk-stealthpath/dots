@@ -7,16 +7,16 @@ export CONFIG_DIR=$HOME/.config
 
 __title "Updating APT stores"
 sudo apt update
-sudo apt install git wget
+sudo apt install -y git wget curl
 
 __bitwarden() {
     __title "Checking for Bitwarden"
     if ! command -v bw; then
         __info "Bitwarden CLI not found. Installing now..."
-        sudo apt install jq unzip
+        sudo apt install -y jq unzip
         wget https://github.com/bitwarden/clients/releases/download/cli-v2025.8.0/bw-linux-2025.8.0.zip
         unzip bw-linux-2025.8.0.zip
-        mv bw $HOME/.local/bin/bw
+        sudo mv bw /usr/bin/bw
     else 
         __info "Bitwarden CLI found at $(which bw)"
     fi
