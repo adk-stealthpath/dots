@@ -7,6 +7,7 @@ export CONFIG_DIR=$HOME/.config
 
 __title "Updating APT stores"
 sudo apt update
+sudo apt install git wget
 
 __bitwarden() {
     __title "Checking for Bitwarden"
