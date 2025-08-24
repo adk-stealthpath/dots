@@ -70,7 +70,7 @@ local rose_pine_colors = {
 }
 
 -- Apply the Rose Pine colors to the notification theme
-beautiful.notification_font = "DejaVuSansM Nerd Font Mono 10"
+beautiful.notification_font = "DejaVuSansM Nerd Font Mono 12"
 beautiful.notification_fg = rose_pine_colors.highlight
 beautiful.notification_bg = rose_pine_colors.surface
 beautiful.notification_border_width = 0

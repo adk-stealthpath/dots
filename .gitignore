@@ -1,4 +1,5 @@
-obsidian
-zsh/oh-my-zsh
-tmux/tpm
-tmux/plugins
+*obsidian
+*zsh/oh-my-zsh
+*zsh/.zcompdump*
+*tmux/tpm
+*tmux/plugins

@@ -36,8 +36,8 @@ local function create_container(widget, bg_color, fg_color)
                 widget,
                 left = 12,
                 right = 12,
-                top = 6,
-                bottom = 6,
+                top = 2,
+                bottom = 2,
                 widget = wibox.container.margin,
             },
             bg = bg_color or colors.surface,
@@ -50,7 +50,7 @@ local function create_container(widget, bg_color, fg_color)
         },
         left = 7,
         right = 7,
-        top = 3,
+        top = 2,
         widget = wibox.container.margin,
     }
 end
@@ -156,7 +156,7 @@ local function create_center_section()
     
     local function update_datetime()
         -- Use bash -c to properly handle the TZ environment variable
-        v = string.format("TZ=%s date '+%%a %%d %%b %%Y, %%H:%%M:%%S [%%Z]'", tz.get_timezone())
+        v = string.format("TZ=%s date '+%%a %%d %%b, %%H:%%M:%%S [%%Z]'", tz.get_timezone())
         local cmd = {"bash", "-c", v}
         awful.spawn.easy_async(cmd, function(stdout, stderr, exitreason, exitcode)
             if stdout and stdout:match("%S") and exitcode == 0 then
