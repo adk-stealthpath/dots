@@ -32,11 +32,11 @@ __main() {
     for file in *; do
     	if [ -d $file ]; then
             tgt="${file:3}"
-            # if [ -f $file/install.sh ]; then 
-            #     bash $file/install.sh
-            # else 
-            #     __debug "  ==> no further installation required for $file"
-            # fi
+            if [ -f $file/install.sh ]; then 
+                bash $file/install.sh
+            else 
+                __debug "  ==> no further installation required for $file"
+            fi
 
     		if [ -L  $CONFIG_DIR/$tgt ]; then
     			__info "Link for configs [$tgt] already set"
