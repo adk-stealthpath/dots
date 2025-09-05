@@ -5,7 +5,7 @@ local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local notify = require("notify")
 
-local conf = "/opt/k8s-kubeconfig/.kube/k0s/merged.yaml"
+local conf = "/home/akingston/.kube/config"
 
 local contexts = function()
     cmd = 'kubectl --kubeconfig '..conf..' config view -o go-template=\'{{range $key, $value := .clusters}}{{printf "%s\\n" $value.name}}{{end}}\' | grep -v "schwartz"'
@@ -59,7 +59,7 @@ local postyes = function(opts)
     pickers.new(opts, {
         prompt_title = "PostgreSQL Picker",
         finder = finders.new_table {
-            results = contexts()
+            results = {"mr-rental"}
         },
         -- sorter = conf.generic_sorter(opts),
         attach_mappings = function(prompt_bufnr, map)

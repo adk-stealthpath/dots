@@ -156,8 +156,8 @@ local function create_center_section()
     
     local function update_datetime()
         -- Use bash -c to properly handle the TZ environment variable
-        v = string.format("TZ=%s date '+%%a %%d %%b, %%H:%%M:%%S [%%Z]'", tz.get_timezone())
-        local cmd = {"bash", "-c", v}
+        v = string.format("", tz.get_timezone())
+        local cmd = {"bash", "-c", "date '+%a %d %b, %H:%M:%S [%Z]'"}
         awful.spawn.easy_async(cmd, function(stdout, stderr, exitreason, exitcode)
             if stdout and stdout:match("%S") and exitcode == 0 then
                 local time_str = stdout:gsub("\n", ""):gsub("^%s*(.-)%s*$", "%1")

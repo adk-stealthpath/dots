@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $DOTDIR/src/*
+
 declare -A _keys
 _keys["github_rsa"]="d54df796-72c8-4a86-b094-b342015c5958"
 _keys["github_signing"]="c9db485b-a990-4804-8997-b342015c9498"

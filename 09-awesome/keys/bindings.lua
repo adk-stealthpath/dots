@@ -56,14 +56,15 @@ globalkeys = gears.table.join(
         {description = "go back", group = "client"}),
 
     awful.key({ modkey, "Shift"}, "o", 
-	function ()
-		if client.focus then 
-			local next_screen = client.focus.screen.index % screen.count() + 1
-			client.focus:move_to_screen(next_screen)
-		end
-	end,
-	{description = "move focused window to next screen", group = "client" }
+	    function ()
+	    	if client.focus then 
+	    		local next_screen = client.focus.screen.index % screen.count() + 1
+	    		client.focus:move_to_screen(next_screen)
+	    	end
+	    end,
+	    {description = "move focused window to next screen", group = "client" }
     ),
+    awful.key({ modkey,  }, "p", function() awful.spawn("flameshot gui") end, {description = "take a screenshot", group = "screen" }),
 
     -- Increase window size (tile) to the right
     awful.key({ modkey }, "Right",
@@ -89,12 +90,7 @@ globalkeys = gears.table.join(
               {description = "quit awesome", group = "awesome"}),
 
     awful.key({ modkey, "Shift" }, "t", function() 
-        r = awful.spawn.with_line_callback("/home/akingston/.config/rofi/launchers/type-1/timezone.sh", {
-            stdout = function(line)
-                tz.set_timezone(line)
-                naughty.notify({title = "New Timezone Set", text = tz.get_timezone()})
-            end,
-        })
+        r = awful.spawn("/home/akingston/.config/rofi/launchers/type-1/timezone.sh")
     end
     ),
 

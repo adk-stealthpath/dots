@@ -5,7 +5,6 @@ alias tmux="tmux -u2"
 alias sudo="sudo --preserve-env=PATH"
 alias k9s="k9s"
 # alias docker="podman"
-alias k="kubectl"
 alias p="podman"
 alias C="xclip -selection clipboard"
 alias V="xclip -o -selection clipboard"
@@ -29,11 +28,13 @@ alias ll="eza --time-style=long-iso -l --changed"
 
 # k9s proper loading 
 load_k9s() {
-    context=$(kubectl config get-contexts | awk '{print $2}' | sed -n '2 p')
-    k9s --kubeconfig /opt/k8s-kubeconfig/.kube/k0s/merged.yaml --context $context --command contexts --headless
+    man_dir="/opt/helmet/.kube/k0s/merged.yaml"
+    context=$(kubectl --kubeconfig $man_dir config get-contexts | awk '{print $2}' | sed -n '2 p')
+    k9s --kubeconfig $man_dir --context $context --command contexts --headless
 }
 
-alias kl="load_k9s"
+alias ks="load_k9s"
+alias kl="k9s --kubeconfig ~/.kube/config"
 
 alias bc=build
 
@@ -49,21 +50,52 @@ build() {
     podman push $TAG
 }
 
-k0sz_config() {
-  if [ -z "$1" ]; then
-    echo "Usage: k0s_config <last_octet_of_ip>"
-    return 1
-  fi
+# alias schwartz-argo='export -f kubectl; find $HOME/stealthpath/schwartz/argo-workflow-templates -path "*/archive" -prune -o -type f -name "*.yaml" -print0 | xargs -0 -I{} bash -c '\''CONTENT=$(sed "s|__SUBJECT_CN__|schwartz.spc.sp|g" "{}"); if [ -n "$CONTENT" ]; then echo "$CONTENT" | kubectl apply -f -; else echo "Skipping empty file: {}"; fi'\'''
+schwartz_argo() {
+   local __subject_cn="${1:-schwartz-ajn.spc.sp}"
+   local kubectl_cmd="kubectl"
 
-  IP="10.10.0.$1"
-  ssh -q sandurz@$IP sudo k0s kubeconfig admin > ~/.kube/sandurz.yaml
-  if [ $? -eq 0 ]; then
-    echo "Kubeconfig written to ~/.kube/sandurz.yaml"
+   if [ -n "$KUBE_CONTEXT" ]; then
+       kubectl_cmd="kubectl --context=$KUBE_CONTEXT"
+   fi
+
+   export -f kubectl
+   find ~/stealthpath/schwartz/argo-workflow-templates -path "*/archive" -prune -o -type f -name "*.yaml" -print0 | \
+   xargs -0 -I{} bash -c '
+       CONTENT=$(sed "s|__SUBJECT_CN__|'"$__subject_cn"'|g" "{}");
+       if [ -n "$CONTENT" ]; then
+           echo "$CONTENT" | '"$kubectl_cmd"' apply -f -;
+       else
+           echo "Skipping empty file: {}";
+       fi'
+}
+alias upd_wf=schwartz_argo
+
+kubectl() {
+  # Run kubectl and store arguments
+  local output_format_arg=false
+  for arg in "$@"; do
+    if [[ "$arg" == "-o" || "$arg" == --output=* || "$arg" == json || "$arg" == yaml || "$arg" == jsonpath=* ]]; then
+      output_format_arg=true
+      break
+    fi
+  done
+
+  if [ "$output_format_arg" = true ]; then
+    # Don't color structured output
+    command kubectl "$@"
   else
-    echo "Failed to generate kubeconfig from $IP"
+    # Color normal output
+    command kubectl "$@" | awk '
+      {
+        gsub(/created/,    "\033[0;32m&\033[0m")  # green
+        gsub(/updated/,    "\033[0;33m&\033[0m")  # yellow
+        gsub(/unchanged/,  "\033[0;90m&\033[0m")  # gray
+        gsub(/deleted/,    "\033[0;31m&\033[0m")  # red
+        gsub(/configured/, "\033[0;34m&\033[0m")  # blue
+        print
+      }'
   fi
 }
 
-alias "k9sz"="~/go/bin/k9s --kubeconfig ~/.kube/sandurz.yaml"
-
-alias schwartz-argo='export -f kubectl; find $HOME/stealthpath/schwartz/argo-workflow-templates -path "*/archive" -prune -o -type f -name "*.yaml" -print0 | xargs -0 -I{} bash -c '\''CONTENT=$(sed "s|__SUBJECT_CN__|schwartz.spc.sp|g" "{}"); if [ -n "$CONTENT" ]; then echo "$CONTENT" | kubectl apply -f -; else echo "Skipping empty file: {}"; fi'\'''
+alias k="kubectl"

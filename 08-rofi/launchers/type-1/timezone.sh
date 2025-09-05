@@ -16,8 +16,10 @@ theme='style-5'
 
 options=$(find /usr/share/zoneinfo -type f | grep -v -E '(right/|posix/)' | sed 's|/usr/share/zoneinfo/||' | grep -E '[A-Z][a-z]*/[A-Z][a-z]*(_[A-Z][a-z]*)?' | grep -v '[0-9]' | sort | tr ' ' '\n')
 ## Run
-echo -e $options | sed 's/ /\n/g' | rofi \
+chosen=$(echo -e $options | sed 's/ /\n/g' | rofi \
     -dmenu -i -p \
-    -theme ${dir}/${theme}.rasi
+    -theme ${dir}/${theme}.rasi)
+
+timedatectl set-timezone $chosen
 
 

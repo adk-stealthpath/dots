@@ -14,7 +14,8 @@ export GOBIN=$GOPATH/bin
 export PATH=$GOBIN:/usr/local/go/bin:$PATH
 
 # Rust environment 
-# export PATH=$HOME/.cargo/bin:$PATH
+export PATH=$HOME/.cargo/bin:$PATH
+export CARGO_TARGET_DIR=$HOME/.cargo/bin
 
 # useful environment vars 
 export SHELL=/usr/bin/zsh
@@ -32,4 +33,4 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # k8s kubeconfig 
-export KUBECONFIG="/opt/k8s-kubeconfig/.kube/k0s/merged.yaml"
+export KUBECONFIG=$HOME/.kube/config

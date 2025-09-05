@@ -10,7 +10,7 @@ output DP-1-0
 off
 output eDP-1
 off
-output HDMI-1-0
+output HDMI-0
 mode 5120x1440
 pos 0x0
 primary
