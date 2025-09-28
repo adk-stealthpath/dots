@@ -1,8 +1,8 @@
 #!/usr/bin/zsh
 # useful aliases
 alias v="nvim"
-alias tmux="tmux -u2"
-alias sudo="sudo --preserve-env=PATH"
+alias t="tmux"
+alias sudo="sudo --preserve-env"
 alias k9s="k9s"
 # alias docker="podman"
 alias p="podman"

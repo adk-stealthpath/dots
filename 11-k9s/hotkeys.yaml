@@ -1,36 +1,41 @@
 hotKeys:
-  # Hitting Shift-0 navigates to your pod view matching pods with labels app=kindnet
-  ctrl-shift-p:
-    shortCut: Ctrl-Shift-p
-    description: Sort by namespace
-    command: shift-p
-
-  shift-p:
-    shortCut: Shift-p
-    description: Viewing pods
-    command: pods
-
   shift-v:
-    shortCut: Shift-2
-    description: Istio virtual services
-    command: vs
-
-  shift-0:
-    shortCut: Shift-0
-    description: Secrets
-    command: secrets
-
-  shift-h:
-    shortCut: Shift-H
-    description: Helm releases
-    command: helm
-
-  shift-v:
-    shortCut: Shift-V
-    description: Vitual services
-    command: vs
-
-  f1:
-    shortCut: F1
-    description: Context
-    command: ctx
+    shortCut:    Shift-V
+    description: Filter out completed pods
+    command:     pods /!Completed
+    keepHistory: true
+#  # Hitting Shift-0 navigates to your pod view matching pods with labels app=kindnet
+#  ctrl-shift-p:
+#    shortCut: Ctrl-Shift-p
+#    description: Sort by namespace
+#    command: shift-p
+#
+#  shift-p:
+#    shortCut: Shift-p
+#    description: Viewing pods
+#    command: pods
+#
+#  shift-v:
+#    shortCut: Shift-2
+#    description: Istio virtual services
+#    command: vs
+#
+#  shift-0:
+#    shortCut: Shift-0
+#    description: Secrets
+#    command: secrets
+#
+#  shift-h:
+#    shortCut: Shift-H
+#    description: Helm releases
+#    command: helm
+#
+#  shift-v:
+#    shortCut: Shift-V
+#    description: Vitual services
+#    command: vs
+#
+#  f1:
+#    shortCut: F1
+#    description: Context
+#    command: ctx

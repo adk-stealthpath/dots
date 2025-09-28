@@ -12,7 +12,7 @@ k9s:
       - zcollect
       - zaware
   ui:
-    skin: rose-pine
+    skin: everforest-dark
     enableMouse: false
     headless: false
     logoless: false

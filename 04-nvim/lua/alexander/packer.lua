@@ -16,7 +16,8 @@ return require('packer').startup(function(use)
   }
 
   -- theme
-  use 'rose-pine/neovim'
+  use "neanias/everforest-nvim"
+
 
   -- treesitter
   use {

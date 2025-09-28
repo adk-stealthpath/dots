@@ -1,0 +1,29 @@
+# Everforest (Dark / Soft) for Ghostty
+# Palette based on the Everforest colors by sainnhe.
+
+# 16-color ANSI palette
+palette = 0=#2d353b      # black      (bg0)
+palette = 1=#e67e80      # red
+palette = 2=#a7c080      # green
+palette = 3=#dbbc7f      # yellow
+palette = 4=#7fbbb3      # blue (tealish)
+palette = 5=#d699b6      # magenta
+palette = 6=#83c092      # cyan (aqua)
+palette = 7=#d3c6aa      # white (fg)
+
+palette = 8=#859289      # bright black (gray1)
+palette = 9=#f85552      # bright red
+palette = 10=#8da101     # bright green (olive)
+palette = 11=#dfa000     # bright yellow (gold)
+palette = 12=#3a94c5     # bright blue
+palette = 13=#df69ba     # bright magenta
+palette = 14=#83c092     # bright cyan (same hue, a touch bright)
+palette = 15=#fdf6e3     # bright white (lightest paper)
+
+# Core UI colors
+background = #2d353b
+foreground = #d3c6aa
+cursor-color = #d3c6aa
+cursor-text = #2d353b
+selection-background = #475258   # bg3
+selection-foreground = #d3c6aa

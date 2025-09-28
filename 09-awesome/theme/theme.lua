@@ -59,20 +59,20 @@ awful.button({ }, 5, function ()
 end))
 
 -- notifications
--- Define the Rose Pine colors
-local rose_pine_colors = {
-    base = "#ea9a97",
-    surface = "#2a273f",
-    mantle = "#49474f",
-    overlay1 = "#5a586e",
-    overlay2 = "#63606e",
-    highlight = "#b48ead"
+-- Define the Everforest colours
+local everforest_colors = {
+    base      = "#d3c6aa", -- main foreground
+    surface   = "#2d353b", -- main background (bg0, medium)
+    mantle    = "#323d43", -- slightly lighter background (bg1/soft)
+    overlay1  = "#475258", -- bg3, selection / subtle highlights
+    overlay2  = "#859289", -- gray, comments / muted
+    highlight = "#a7c080"  -- green accent (primary highlight)
 }
 
 -- Apply the Rose Pine colors to the notification theme
 beautiful.notification_font = "DejaVuSansM Nerd Font Mono 12"
-beautiful.notification_fg = rose_pine_colors.highlight
-beautiful.notification_bg = rose_pine_colors.surface
+beautiful.notification_fg = everforest_colors.highlight
+beautiful.notification_bg = everforest_colors.surface
 beautiful.notification_border_width = 0
 beautiful.notification_width = 500
 beautiful.notification_opacity = 8

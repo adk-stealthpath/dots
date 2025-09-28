@@ -6,23 +6,23 @@ local naughty = require("naughty")
 local current_timezone = require("keys/bindings")
 local tz = require("timezone")
 
--- Rose Pine theme colors
+-- Everforest theme colors
 local colors = {
-    base = "#191724",
-    surface = "#1f1d2e",
-    overlay = "#26233a",
-    muted = "#6e6a86",
-    subtle = "#908caa",
-    text = "#e0def4",
-    love = "#eb6f92",
-    gold = "#f6c177",
-    rose = "#ebbcba",
-    pine = "#31748f",
-    foam = "#9ccfd8",
-    iris = "#c4a7e7",
-    highlight_low = "#21202e",
-    highlight_med = "#403d52",
-    highlight_high = "#524f67"
+    base           = "#2b3339", -- background (bg0, medium contrast)
+    surface        = "#323c41", -- bg1
+    overlay        = "#3a4248", -- bg2
+    muted          = "#7a8478", -- gray, muted text
+    subtle         = "#9da9a0", -- lighter gray, UI hints
+    text           = "#d3c6aa", -- main foreground
+    love           = "#e67e80", -- red accent
+    gold           = "#dbbc7f", -- yellow/gold accent
+    rose           = "#d699b6", -- magenta accent
+    pine           = "#a7c080", -- green accent
+    foam           = "#7fbbb3", -- blue/teal accent
+    iris           = "#83c092", -- aqua/cyan accent
+    highlight_low  = "#323c41", -- bg1
+    highlight_med  = "#3a4248", -- bg2
+    highlight_high = "#4d5960"  -- bg3
 }
 
 local M = {}
