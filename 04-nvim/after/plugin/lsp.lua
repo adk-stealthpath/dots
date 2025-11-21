@@ -38,7 +38,6 @@ require('mason-lspconfig').setup({
       lsp = {
       	'rust_analyzer',
       	'gopls',
-        'jedi-language-server',
         'rubocop',
         'html-lsp',
         'htmx-lsp',
@@ -52,6 +51,22 @@ require('mason-lspconfig').setup({
   },
   handlers = {
     default_setup,
+    pylsp = function()
+      require('lspconfig').pylsp.setup({
+        capabilities = lsp_capabilities,
+        settings = {
+          pylsp = {
+            plugins = {
+              pycodestyle = {
+                enabled = true,
+                ignore = {'E501'},  -- Ignore line too long
+                maxLineLength = 120  -- Or whatever you want
+              },
+            }
+          }
+        }
+      })
+    end,
   },
 })
 

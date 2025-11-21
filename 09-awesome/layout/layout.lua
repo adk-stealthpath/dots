@@ -1,172 +1,91 @@
 local awful = require("awful")
--- Custom layout for AwesomeWM
--- Add this to your rc.lua
+local wibox = require("wibox")
+local gears = require("gears")
 
+-- Define your custom layout
 local custom_layout = {}
-custom_layout.name = "custom"
+custom_layout.name = "custom_split"
 
 function custom_layout.arrange(p)
     local area = p.workarea
     local clients = p.clients
-    local num_clients = #clients
-    local gap = 10 -- 5px gap between windows
+    local n = #clients
     
-    if num_clients == 0 then
-        return
-    end
+    if n == 0 then return end
     
-    local geometries = {}
-    
-    if num_clients == 1 then
-        -- 1 window: centre 100% (no gaps needed for single window)
-        geometries[1] = {
+    if n == 1 then
+        -- Single window: middle half of screen
+        local width = area.width * 0.5
+        local x = area.x + (area.width * 0.25)  -- Center it
+        
+        local g = {
+            x = x,
+            y = area.y,
+            width = width,
+            height = area.height
+        }
+        p.geometries[clients[1]] = g
+        
+    elseif n == 2 then
+        -- Two windows: 2/3 and 1/3 split
+        local g1 = {
             x = area.x,
             y = area.y,
-            width = area.width,
+            width = area.width * (2/3),
             height = area.height
         }
+        local g2 = {
+            x = area.x + (area.width * (2/3)),
+            y = area.y,
+            width = area.width * (1/3),
+            height = area.height
+        }
+        p.geometries[clients[1]] = g1
+        p.geometries[clients[2]] = g2
         
-    elseif num_clients == 2 then
-        -- 2 windows: left 2/3, right 1/3 with gap
-        local total_gap = gap
-        local left_width = math.floor((area.width - total_gap) * 2/3)
-        local right_width = area.width - left_width - total_gap
-        
-        geometries[1] = {
+    elseif n == 3 then
+        -- Three windows: 1/4, 1/2, 1/4 split
+        local g1 = {
             x = area.x,
             y = area.y,
-            width = left_width,
+            width = area.width * 0.25,
             height = area.height
         }
-        geometries[2] = {
-            x = area.x + left_width + gap,
+        local g2 = {
+            x = area.x + (area.width * 0.25),
             y = area.y,
-            width = right_width,
+            width = area.width * 0.5,
             height = area.height
         }
+        local g3 = {
+            x = area.x + (area.width * 0.75),
+            y = area.y,
+            width = area.width * 0.25,
+            height = area.height
+        }
+        p.geometries[clients[1]] = g1
+        p.geometries[clients[2]] = g2
+        p.geometries[clients[3]] = g3
         
-    elseif num_clients == 3 then
-        -- 3 windows: left 1/4, centre 1/2, right 1/4 with gaps
-        local total_gaps = gap * 2  -- 2 gaps between 3 windows
-        local available_width = area.width - total_gaps
-        local left_width = math.floor(available_width * 1/4)
-        local centre_width = math.floor(available_width * 1/2)
-        local right_width = available_width - left_width - centre_width
-        
-        geometries[1] = {
-            x = area.x,
-            y = area.y,
-            width = left_width,
-            height = area.height
-        }
-        geometries[2] = {
-            x = area.x + left_width + gap,
-            y = area.y,
-            width = centre_width,
-            height = area.height
-        }
-        geometries[3] = {
-            x = area.x + left_width + gap + centre_width + gap,
-            y = area.y,
-            width = right_width,
-            height = area.height
-        }
-        
-    elseif num_clients == 4 then
-        -- 4 windows: left 1/4, centre 1/2, right column split with gaps
-        local total_h_gaps = gap * 2  -- horizontal gaps
-        local available_width = area.width - total_h_gaps
-        local left_width = math.floor(available_width * 1/4)
-        local centre_width = math.floor(available_width * 1/2)
-        local right_width = available_width - left_width - centre_width
-        local right_height = math.floor((area.height - gap) / 2)
-        
-        geometries[1] = {
-            x = area.x,
-            y = area.y,
-            width = left_width,
-            height = area.height
-        }
-        geometries[2] = {
-            x = area.x + left_width + gap,
-            y = area.y,
-            width = centre_width,
-            height = area.height
-        }
-        geometries[3] = {
-            x = area.x + left_width + gap + centre_width + gap,
-            y = area.y,
-            width = right_width,
-            height = right_height
-        }
-        geometries[4] = {
-            x = area.x + left_width + gap + centre_width + gap,
-            y = area.y + right_height + gap,
-            width = right_width,
-            height = area.height - right_height - gap
-        }
-        
-    elseif num_clients >= 5 then
-        -- 5+ windows: corners are split, centre is full height, with gaps
-        local total_h_gaps = gap * 2  -- horizontal gaps
-        local available_width = area.width - total_h_gaps
-        local side_width = math.floor(available_width / 4)  -- 1/4 of available width
-        local centre_width = math.floor(available_width / 2)  -- 1/2 of available width
-        local remaining_width = available_width - (side_width * 2) - centre_width
-        local half_height = math.floor((area.height - gap) / 2)
-        
-        -- Top left
-        geometries[1] = {
-            x = area.x,
-            y = area.y,
-            width = side_width,
-            height = half_height
-        }
-        -- Bottom left
-        geometries[2] = {
-            x = area.x,
-            y = area.y + half_height + gap,
-            width = side_width,
-            height = area.height - half_height - gap
-        }
-        -- Centre
-        geometries[3] = {
-            x = area.x + side_width + gap,
-            y = area.y,
-            width = centre_width,
-            height = area.height
-        }
-        -- Top right
-        geometries[4] = {
-            x = area.x + side_width + gap + centre_width + gap,
-            y = area.y,
-            width = side_width + remaining_width,
-            height = half_height
-        }
-        -- Bottom right
-        geometries[5] = {
-            x = area.x + side_width + gap + centre_width + gap,
-            y = area.y + half_height + gap,
-            width = side_width + remaining_width,
-            height = area.height - half_height - gap
-        }
-        
-        -- If there are more than 5 windows, stack them in the remaining spaces
-        -- (You can modify this behavior as needed)
-        for i = 6, num_clients do
-            -- Just stack additional windows on top of the last one for simplicity
-            geometries[i] = geometries[5]
-        end
-    end
-    
-    -- Apply geometries to clients
-    for i, c in ipairs(clients) do
-        if geometries[i] then
-            c:geometry(geometries[i])
+    else
+        -- For 4+ windows, you can either tile them however you want
+        -- or fall back to awful.layout.suit.tile
+        -- Here's a simple equal split as fallback:
+        local width = area.width / n
+        for i, c in ipairs(clients) do
+            local g = {
+                x = area.x + ((i-1) * width),
+                y = area.y,
+                width = width,
+                height = area.height
+            }
+            p.geometries[c] = g
         end
     end
 end
 
+-- Add the layout to awful's layout list
+awful.layout.suit.custom_split = custom_layout
 
 -- Add the custom layout to your layouts table
 -- Find this section in your rc.lua and add custom_layout:

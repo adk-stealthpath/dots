@@ -34,7 +34,6 @@ load_k9s() {
 }
 
 alias ks="load_k9s"
-alias kl="k9s --kubeconfig ~/.kube/config"
 
 alias bc=build
 
@@ -48,6 +47,8 @@ build() {
     echo ""
     podman build -t $TAG -f Dockerfile ~/stealthpath/zcore
     podman push $TAG
+    cosign sign -y --tlog-upload=false --key awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key $TAG
+    cosign verify --insecure-ignore-tlog --key awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key $TAG
 }
 
 # alias schwartz-argo='export -f kubectl; find $HOME/stealthpath/schwartz/argo-workflow-templates -path "*/archive" -prune -o -type f -name "*.yaml" -print0 | xargs -0 -I{} bash -c '\''CONTENT=$(sed "s|__SUBJECT_CN__|schwartz.spc.sp|g" "{}"); if [ -n "$CONTENT" ]; then echo "$CONTENT" | kubectl apply -f -; else echo "Skipping empty file: {}"; fi'\'''
@@ -99,3 +100,7 @@ kubectl() {
 }
 
 alias k="kubectl"
+
+# temporary
+alias R="ssh sandurz@10.10.0.71 \"sudo systemctl restart sandurz-api.service\""
+alias m="ssh sandurz@10.10.0.71 \"journalctl -u sandurz-api.service --no-pager -f\""

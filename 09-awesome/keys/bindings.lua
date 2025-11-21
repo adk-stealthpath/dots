@@ -54,6 +54,45 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "go back", group = "client"}),
+    awful.key({ modkey, "Shift" }, "s",
+    function(c)
+        -- Center a 2560x1440 window (or 1920x1080 if you prefer)
+        local screen_geo = c.screen.workarea
+        local share_width = 2560
+        local share_height = 1440
+        
+        c:geometry({
+            x = screen_geo.x + (screen_geo.width - share_width) / 2,
+            y = screen_geo.y + (screen_geo.height - share_height) / 2,
+            width = share_width,
+            height = share_height
+        })
+        c.floating = true
+        c:raise()
+    end,
+    {description = "snap to shareable size", group = "client"}),
+
+    awful.key({ modkey, "Control" }, "s",
+    function()
+        if not _G.monitor_split then
+            -- Split the monitor
+            awful.spawn.with_shell([[
+                xrandr --setmonitor DP-1-share 2560/600x1440/340+0+0 HDMI-0 && \
+                xrandr --setmonitor DP-1-work 2560/600x1440/340+2560+0 HDMI-0 && \
+                echo 'awesome.restart()' | awesome-client
+            ]])
+            _G.monitor_split = true
+        else
+            -- Merge the monitor back
+            awful.spawn.with_shell([[
+                xrandr --delmonitor DP-1-share && \
+                xrandr --delmonitor DP-1-work && \
+                echo 'awesome.restart()' | awesome-client
+            ]])
+            _G.monitor_split = false
+        end
+    end,
+    {description = "toggle monitor split", group = "screen"}),
 
     awful.key({ modkey, "Shift"}, "o", 
 	    function ()

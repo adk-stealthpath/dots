@@ -29,3 +29,14 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+local parser_config = require 'nvim-treesitter.parsers'.get_parser_configs()
+
+parser_config.latex = {
+    install_info = {
+        url = '~/from_src/tree-sitter-latex',
+        files = {"src/parser.c", "src/scanner.c", "src/tree_sitter/parser.h"},
+        branch = 'v0.4.0',
+        generate_requires_npm = true,
+    }
+}
