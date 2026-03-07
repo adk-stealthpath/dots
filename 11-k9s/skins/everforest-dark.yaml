@@ -4,9 +4,9 @@
 # -----------------------------------------------------------------------------
 
 text:    &text    "#d3c6aa"
-base:    &base    "#2b3339"  # bg0 (medium)
-overlay: &overlay "#323c41"  # bg1
-muted:   &muted   "#7a8478"  # gray
+base:    &base    "#2D353B"  # bg0 (medium)
+overlay: &overlay "#343F44"  # bg1
+muted:   &muted   "#56635F"  # gray
 red:     &red     "#e67e80"
 blue:    &blue    "#7fbbb3"
 yellow:  &yellow  "#dbbc7f"
@@ -19,12 +19,12 @@ k9s:
   # General K9s styles
   body:
     fgColor: *text
-    bgColor: *base
+    bgColor:  default
     logoColor: *green
   # Command prompt styles
   prompt:
     fgColor: *text
-    bgColor: *base
+    bgColor:  default
     suggestColor: *green
     border:
       command: *orange
@@ -36,7 +36,7 @@ k9s:
   # Dialog styles.
   dialog:
     fgColor: *text
-    bgColor: *base
+    bgColor:  default
     buttonFgColor: *text
     buttonBgColor: *green
     buttonFocusFgColor: *yellow
@@ -87,16 +87,16 @@ k9s:
     # TableView attributes.
     table:
       fgColor: *text
-      bgColor: *base
+      bgColor:  default
       # Header row styles.
       header:
         fgColor: *text
-        bgColor: *base
+        bgColor:  default
         sorterColor: *red
     # Xray view attributes.
     xray:
       fgColor: *text
-      bgColor: *base
+      bgColor:  default
       cursorColor: *overlay
       graphicColor: *green
       showIcons: false
@@ -108,8 +108,8 @@ k9s:
     # Logs styles.
     logs:
       fgColor: *text
-      bgColor: *base
+      bgColor:  default
       indicator:
         fgColor: *text
-        bgColor: *base
+        bgColor:  default
 

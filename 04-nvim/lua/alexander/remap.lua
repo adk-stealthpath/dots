@@ -2,11 +2,14 @@ vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 vim.keymap.set("i", "jk", "<Esc>")
 
--- move panes 
+-- move panes
 vim.keymap.set("n", "<leader>j", "<C-w><C-j>")
 vim.keymap.set("n", "<leader>k", "<C-w><C-k>")
 vim.keymap.set("n", "<leader>h", "<C-w><C-h>")
 vim.keymap.set("n", "<leader>l", "<C-w><C-l>")
+
+-- terminal mode: make <C-w> behave like normal mode
+vim.keymap.set("t", "<C-w>", "<C-\\><C-n><C-w>")
 
 -- move tabs
 vim.keymap.set("n", "<C-Left>", ":tabprevious<CR>")

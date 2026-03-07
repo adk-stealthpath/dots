@@ -130,6 +130,15 @@ root.buttons(mousebindings)
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
+    { 
+        rule = { class = "helmet-float" },
+        properties = { 
+            floating = true,
+            placement = awful.placement.centered,
+            width = 800,
+            height = 600
+        }
+    },
     { rule = { },
       properties = { border_width = beautiful.border_width,
                      border_color = beautiful.border_normal,
@@ -161,6 +170,15 @@ awful.rules.rules = {
             placement = awful.placement.centered,
             width = 800,
             height = 600
+        }
+    },
+    {
+        rule = { class = "zen" },
+        properties = { 
+            maximized_vertical = false,
+            maximized_horizontal = false,
+            maximized = false,
+            border_width = 0
         }
     }
 }

@@ -13,7 +13,7 @@ chosen=$(echo -e "$options" | rofi -dmenu -i -p "Power Menu" -theme ${dir}/${the
 
 case $chosen in
     "Lock")
-        i3lock -c 1e1e2e
+        i3lock -c 1e1e2e --noinput-text="" --verif-text="Touch YubiKey" --wrong-text="Failed"
         ;;
     "Logout")
         confirm=$(echo -e "Yes\nNo" | rofi -dmenu -i -p "Logout? This will close all applications" -theme ${dir}/${theme}.rasi)

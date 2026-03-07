@@ -21,7 +21,7 @@ local contexts = function()
 end
 
 local get_secret = function(context)
-    local handle = io.popen(string.format('kubectl --kubeconfig %s --context %s get secret -n postgres postgres-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d -', conf, context))
+    local handle = io.popen(string.format('kubectl --kubeconfig %s --context %s get secret -n postgresql postgres-broker-pass -o jsonpath="{.data.password}" | base64 -d -', conf, context))
     local res = ""
     if handle ~= nil then
         res = handle:read("*a")
@@ -67,7 +67,7 @@ local postyes = function(opts)
                 actions.close(prompt_bufnr)
                 kill_pf()
 
-                local context = action_state.get_selected_entry()
+                local context = action_state.get_selected_entry()[1]
 
                 local resp = check_node(context)
                 print(resp)
@@ -77,13 +77,32 @@ local postyes = function(opts)
                 end
 
                 local job = vim.fn.jobstart(
-                    string.format("kubectl --kubeconfig %s --context %s port-forward -n postgres postgres-postgresql-0 5432", conf, context)
-                )
-                local pass = get_secret(context[1])
-                vim.g.dbs = {{name = "network", url = string.format("postgresql://postgres:%s@localhost:5432/network", pass)}}
-
-                vim.cmd("tabnew")
-                vim.cmd("DBUI")
+                    string.format("kubectl --kubeconfig %s --context %s port-forward -n postgresql postgresql-1 5432", conf, context),
+                    {
+                        on_stdout = function(_, data, _)
+                            -- Port-forward outputs "Forwarding from 127.0.0.1:5432 -> 5432" when ready
+                            for _, line in ipairs(data) do
+                                if string.match(line, "Forwarding from") then
+                                    vim.schedule(function()
+                                        local pass = get_secret(context)
+                                        vim.g.dbs = {{name = "network", url = string.format("postgresql://broker:%s@localhost:5432/network?sslmode=disable", pass)}}
+                                        vim.cmd("tabnew")
+                                        vim.cmd("DBUI")
+                                    end)
+                                    break
+                                end
+                            end
+                        end,
+                        on_stderr = function(_, data, _)
+                            for _, line in ipairs(data) do
+                                if line ~= "" then
+                                    print(line)
+                                    notify(string.format("Port-forward error: %s", line), "error")
+                                end
+                            end
+                        end
+                    }
+                )                
             end)
             return true
         end,

@@ -3,7 +3,6 @@
 export ZSH="/home/akingston/.config/zsh/oh-my-zsh"
 export ZSH_CUSTOM="/home/akingston/.config/zsh/oh-my-zsh"
 export ZDOTDIR="/home/akingston/.config/zsh"
-export KUBECONFIG=/home/akingston/.kube/k0s/config.yaml
 export PATH=$HOME/.local/bin:$PATH
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
@@ -11,7 +10,7 @@ export LANG=en_US.UTF-8
 # Go environment 
 export GOPATH=~/go
 export GOBIN=$GOPATH/bin
-export PATH=$GOBIN:/usr/local/go/bin:$PATH
+export PATH=$GOBIN:$PATH:$HOME/.local/go/bin
 
 # Rust environment 
 export PATH=$HOME/.cargo/bin:$PATH
@@ -33,4 +32,6 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # k8s kubeconfig 
-export KUBECONFIG=/opt/helmet/.kube/k0s/merged.yaml
+export KUBECONFIG=/home/akingston/.kube/helmet/merged.yaml
+
+typeset -U PATH

@@ -1,6 +1,6 @@
 k9s:
   liveViewAutoRefresh: false
-  screenDumpDir: /home/akingston@sp.local/.local/state/k9s/screen-dumps
+  screenDumpDir: /home/akingston/.local/state/k9s/screen-dumps
   refreshRate: 2
   maxConnRetry: 5
   readOnly: false

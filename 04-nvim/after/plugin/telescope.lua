@@ -8,3 +8,12 @@ vim.keymap.set('n', '<leader>tb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>tj', builtin.jumplist, {})
 
 -- vim.keymap.set('n', '<leader>tn', function() require('telescope').extensions.notify.notify({}) end )
+require('telescope').setup({
+  defaults = {
+    mappings = {
+      i = {
+        ["<Esc>"] = require('telescope.actions').close,
+      },
+    },
+  },
+})

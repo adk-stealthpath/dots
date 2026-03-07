@@ -89,4 +89,12 @@ return require('packer').startup(function(use)
 
   -- notifications
   use 'rcarriga/nvim-notify'
+
+  -- claude code
+  use {
+    'greggh/claude-code.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim', -- Required for git operations
+    },
+  }
 end)

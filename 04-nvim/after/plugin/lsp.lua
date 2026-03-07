@@ -25,6 +25,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end
 })
 
+-- Filetype detection for templ
+vim.filetype.add({
+  extension = {
+    templ = 'templ',
+  },
+})
+
 local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local default_setup = function(server)
@@ -32,25 +39,49 @@ local default_setup = function(server)
     capabilities = lsp_capabilities,
   })
 end
+
+-- LSP floating window borders (hover, signature help, diagnostics)
+local border = {
+  {"╭", "FloatBorder"},
+  {"─", "FloatBorder"},
+  {"╮", "FloatBorder"},
+  {"│", "FloatBorder"},
+  {"╯", "FloatBorder"},
+  {"─", "FloatBorder"},
+  {"╰", "FloatBorder"},
+  {"│", "FloatBorder"},
+}
+
+-- Set border for LSP floating windows globally
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or border
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
+
+-- Set border for diagnostic floating windows
+vim.diagnostic.config({
+  float = {
+    border = border,
+  }
+})
+
 require('mason').setup({})
 require('mason-lspconfig').setup({
   ensure_installed = {
-      lsp = {
-      	'rust_analyzer',
-      	'gopls',
-        'rubocop',
-        'html-lsp',
-        'htmx-lsp',
-      },
-      formatter = {
-          'prettier'
-      },
-      dap = {
-          'delve'
-      }
+    'gopls',
+    'pylsp',
   },
   handlers = {
     default_setup,
+    gopls = function()
+        require('lspconfig').gopls.setup({
+            capabilities = lsp_capabilities,
+            cmd = { '/home/akingston/go/bin/gopls' },
+            single_file_support = true,
+        })
+    end,
     pylsp = function()
       require('lspconfig').pylsp.setup({
         capabilities = lsp_capabilities,
@@ -70,17 +101,36 @@ require('mason-lspconfig').setup({
   },
 })
 
+-- templ LSP setup (manual, not managed by mason)
+require('lspconfig').templ.setup({
+  capabilities = lsp_capabilities,
+  on_attach = function(client, bufnr)
+    -- Format on save for templ files
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.format({ async = false })
+      end,
+    })
+  end,
+})
+
 local cmp = require('cmp')
 
 cmp.setup({
   sources = {
     {name = 'nvim_lsp'},
   },
+  window = {
+    completion = cmp.config.window.bordered({
+      winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+    }),
+    documentation = cmp.config.window.bordered({
+      winhighlight = "Normal:Pmenu,FloatBorder:FloatBorder,CursorLine:Visual,Search:None",
+    }),
+  },
   mapping = cmp.mapping.preset.insert({
-    -- Enter key confirms completion item
     ['<CR>'] = cmp.mapping.confirm({select = false}),
-
-    -- Ctrl + space triggers completion menu
     ['<C-Space>'] = cmp.mapping.complete(),
   }),
   snippet = {
@@ -89,3 +139,9 @@ cmp.setup({
     end,
   },
 })
+
+vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE' })
+vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE' })
+-- vim.api.nvim_set_hl(0, 'PmenuBorder', { fg = '#3e3e3e', bg = vim.api.nvim_get_hl(0, {name = 'Pmenu'}).bg })
+vim.api.nvim_set_hl(0, 'PmenuBorder', { fg = '#3e3e3e', bg = '#1e1e1e' })  -- match your Pmenu bg color
+

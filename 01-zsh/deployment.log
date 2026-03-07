@@ -1,0 +1,147 @@
+2025-12-23 17:34:05,895 [CRITICAL] configure_logging: 
+    __  __     __               __     __       ___   ____ ___   ______  ______    ___  _____    ______     ________        _____ __ __          ____  ______
+   / / / /__  / /___ ___  ___  / /_    \ \     |__ \ / __ \__ \ / ____/ <  /__ \  |__ \|__  /   / ____ \   <  /__  /  _    |__  // // /    _    / __ \/ ____/
+  / /_/ / _ \/ / __ `__ \/ _ \/ __/     \ \    __/ // / / /_/ //___ \   / /__/ /  __/ / /_ <   / / __ `/   / /  / /  (_)    /_ </ // /_   (_)  / / / /___ \  
+ / __  /  __/ / / / / / /  __/ /_       / /   / __// /_/ / __/____/ /_ / // __/_ / __/___/ /  / / /_/ /   / /  / /  _     ___/ /__  __/  _    / /_/ /___/ /  
+/_/ /_/\___/_/_/ /_/ /_/\___/\__/      /_/   /____/\____/____/_____/(_)_//____(_)____/____/   \ \__,_/   /_/  /_/  (_)   /____/  /_/    (_)   \____/_____/   
+                                                                                               \____/                                                        
+
+2025-12-23 17:34:05,895 [CRITICAL] configure_logging:  :::::::::::: Logging started at 2025.12.23 @ 17 : 34 : 05 - Level: DEBUG
+2025-12-23 17:34:05,905 [DEBUG] _poll_range: Range poll requested for 10.10.0.31-10.10.0.131 (canary: 10.10.0.20)
+2025-12-23 17:34:05,906 [INFO] _poll_range: Canary check succeeded for 10.10.0.20, scanning range 10.10.0.31-10.10.0.131
+2025-12-23 17:34:05,906 [INFO] _poll_range: Range --> 10.10.0.{31..131}
+2025-12-23 17:34:11,737 [INFO] _poll_range: Output --> 
+2025-12-23 17:34:11,737 [INFO] _poll_range: Range scan complete: 0 live IPs found
+2025-12-23 17:34:12,771 [INFO] _gather_kubeconfigs: Gathering kubeconfigs from 8 targets
+2025-12-23 17:34:12,774 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from dark-helmet-local (dark-helmet@10.10.0.20)
+2025-12-23 17:34:12,776 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from schwartz-nightly (schwartz@10.30.1.105)
+2025-12-23 17:34:12,779 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from lonestarr (lonestarr@10.30.1.100)
+2025-12-23 17:34:12,782 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from schwartz-adhoc (schwartz@10.30.1.118)
+2025-12-23 17:34:12,785 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from sandurz-nightly (sandurz@10.30.1.110)
+2025-12-23 17:34:12,787 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from mr-rental-nightly (sandurz@10.30.1.114)
+2025-12-23 17:34:12,790 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from sandurz-stable (sandurz@10.30.1.112)
+2025-12-23 17:34:12,793 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from mr-rental-stable (sandurz@10.30.1.116)
+2025-12-23 17:34:12,936 [WARNING] _fetch_kubeconfig: SSH command failed for schwartz-adhoc: returncode=255
+2025-12-23 17:34:12,936 [WARNING] _gather_kubeconfigs: Target schwartz-adhoc failed kubeconfig check
+2025-12-23 17:34:12,936 [WARNING] _fetch_kubeconfig: SSH command failed for mr-rental-nightly: returncode=255
+2025-12-23 17:34:12,936 [WARNING] _gather_kubeconfigs: Target mr-rental-nightly failed kubeconfig check
+2025-12-23 17:34:12,937 [WARNING] _fetch_kubeconfig: SSH command failed for lonestarr: returncode=255
+2025-12-23 17:34:12,937 [WARNING] _gather_kubeconfigs: Target lonestarr failed kubeconfig check
+2025-12-23 17:34:12,954 [WARNING] _fetch_kubeconfig: SSH command failed for sandurz-stable: returncode=255
+2025-12-23 17:34:12,954 [WARNING] _gather_kubeconfigs: Target sandurz-stable failed kubeconfig check
+2025-12-23 17:34:12,954 [WARNING] _fetch_kubeconfig: SSH command failed for mr-rental-stable: returncode=255
+2025-12-23 17:34:12,955 [WARNING] _gather_kubeconfigs: Target mr-rental-stable failed kubeconfig check
+2025-12-23 17:34:13,946 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from dark-helmet-local
+2025-12-23 17:34:13,955 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/dark-helmet-local.yaml
+2025-12-23 17:34:13,955 [INFO] _gather_kubeconfigs: Target dark-helmet-local has valid k0s installation
+2025-12-23 17:34:13,956 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/dark-helmet-local.yaml
+2025-12-23 17:34:14,167 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from sandurz-nightly
+2025-12-23 17:34:14,170 [WARNING] _fetch_kubeconfig: Dummy IP 10.11.0.19 found, replacing with 10.30.1.110
+2025-12-23 17:34:14,175 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from schwartz-nightly
+2025-12-23 17:34:14,180 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/sandurz-nightly.yaml
+2025-12-23 17:34:14,182 [INFO] _gather_kubeconfigs: Target sandurz-nightly has valid k0s installation
+2025-12-23 17:34:14,182 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/schwartz-nightly.yaml
+2025-12-23 17:34:14,183 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/sandurz-nightly.yaml
+2025-12-23 17:34:14,183 [INFO] _gather_kubeconfigs: Target schwartz-nightly has valid k0s installation
+2025-12-23 17:34:14,183 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/schwartz-nightly.yaml
+2025-12-23 17:34:14,190 [INFO] _gather_kubeconfigs: Kubeconfig gathering complete: 3/8 targets valid
+2025-12-23 17:34:14,190 [INFO] _build_merged_config: Building merged kubeconfig from 3 targets
+2025-12-23 17:34:14,244 [INFO] _build_merged_config: Saved merged kubeconfig to /home/akingston/.kube/helmet/merged.yaml
+2025-12-23 17:40:52,474 [CRITICAL] configure_logging: 
+    __  __     __               __     __       ___   ____ ___   ______  ______    ___  _____    ______     ________        __ __  ____          _________ 
+   / / / /__  / /___ ___  ___  / /_    \ \     |__ \ / __ \__ \ / ____/ <  /__ \  |__ \|__  /   / ____ \   <  /__  /  _    / // / / __ \   _    / ____/__ \
+  / /_/ / _ \/ / __ `__ \/ _ \/ __/     \ \    __/ // / / /_/ //___ \   / /__/ /  __/ / /_ <   / / __ `/   / /  / /  (_)  / // /_/ / / /  (_)  /___ \ __/ /
+ / __  /  __/ / / / / / /  __/ /_       / /   / __// /_/ / __/____/ /_ / // __/_ / __/___/ /  / / /_/ /   / /  / /  _    /__  __/ /_/ /  _    ____/ // __/ 
+/_/ /_/\___/_/_/ /_/ /_/\___/\__/      /_/   /____/\____/____/_____/(_)_//____(_)____/____/   \ \__,_/   /_/  /_/  (_)     /_/  \____/  (_)  /_____//____/ 
+                                                                                               \____/                                                      
+
+2025-12-23 17:40:52,474 [CRITICAL] configure_logging:  :::::::::::: Logging started at 2025.12.23 @ 17 : 40 : 52 - Level: DEBUG
+2025-12-23 17:40:52,485 [DEBUG] _poll_range: Range poll requested for 10.10.0.31-10.10.0.131 (canary: 10.10.0.20)
+2025-12-23 17:40:52,486 [INFO] _poll_range: Canary check succeeded for 10.10.0.20, scanning range 10.10.0.31-10.10.0.131
+2025-12-23 17:40:52,486 [INFO] _poll_range: Range --> 10.10.0.{31..131}
+2025-12-23 17:40:58,372 [INFO] _poll_range: Output --> 
+2025-12-23 17:40:58,372 [INFO] _poll_range: Range scan complete: 0 live IPs found
+2025-12-23 17:40:59,413 [INFO] _gather_kubeconfigs: Gathering kubeconfigs from 8 targets
+2025-12-23 17:40:59,415 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from dark-helmet-local (dark-helmet@10.10.0.20)
+2025-12-23 17:40:59,418 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from lonestarr (lonestarr@10.30.1.100)
+2025-12-23 17:40:59,420 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from schwartz-nightly (schwartz@10.30.1.105)
+2025-12-23 17:40:59,424 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from schwartz-adhoc (schwartz@10.30.1.118)
+2025-12-23 17:40:59,426 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from sandurz-nightly (sandurz@10.30.1.110)
+2025-12-23 17:40:59,429 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from sandurz-stable (sandurz@10.30.1.112)
+2025-12-23 17:40:59,431 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from mr-rental-nightly (sandurz@10.30.1.114)
+2025-12-23 17:40:59,434 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from mr-rental-stable (sandurz@10.30.1.116)
+2025-12-23 17:40:59,550 [WARNING] _fetch_kubeconfig: SSH command failed for lonestarr: returncode=255
+2025-12-23 17:40:59,550 [WARNING] _gather_kubeconfigs: Target lonestarr failed kubeconfig check
+2025-12-23 17:40:59,569 [WARNING] _fetch_kubeconfig: SSH command failed for sandurz-stable: returncode=255
+2025-12-23 17:40:59,569 [WARNING] _gather_kubeconfigs: Target sandurz-stable failed kubeconfig check
+2025-12-23 17:40:59,580 [WARNING] _fetch_kubeconfig: SSH command failed for mr-rental-stable: returncode=255
+2025-12-23 17:40:59,580 [WARNING] _fetch_kubeconfig: SSH command failed for schwartz-adhoc: returncode=255
+2025-12-23 17:40:59,580 [WARNING] _gather_kubeconfigs: Target mr-rental-stable failed kubeconfig check
+2025-12-23 17:40:59,580 [WARNING] _gather_kubeconfigs: Target schwartz-adhoc failed kubeconfig check
+2025-12-23 17:40:59,585 [WARNING] _fetch_kubeconfig: SSH command failed for mr-rental-nightly: returncode=255
+2025-12-23 17:40:59,585 [WARNING] _gather_kubeconfigs: Target mr-rental-nightly failed kubeconfig check
+2025-12-23 17:41:00,583 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from dark-helmet-local
+2025-12-23 17:41:00,587 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/dark-helmet-local.yaml
+2025-12-23 17:41:00,587 [INFO] _gather_kubeconfigs: Target dark-helmet-local has valid k0s installation
+2025-12-23 17:41:00,589 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/dark-helmet-local.yaml
+2025-12-23 17:41:00,669 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from schwartz-nightly
+2025-12-23 17:41:00,677 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/schwartz-nightly.yaml
+2025-12-23 17:41:00,677 [INFO] _gather_kubeconfigs: Target schwartz-nightly has valid k0s installation
+2025-12-23 17:41:00,677 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/schwartz-nightly.yaml
+2025-12-23 17:41:00,770 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from sandurz-nightly
+2025-12-23 17:41:00,777 [WARNING] _fetch_kubeconfig: Dummy IP 10.11.0.19 found, replacing with 10.30.1.110
+2025-12-23 17:41:00,785 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/sandurz-nightly.yaml
+2025-12-23 17:41:00,785 [INFO] _gather_kubeconfigs: Target sandurz-nightly has valid k0s installation
+2025-12-23 17:41:00,786 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/sandurz-nightly.yaml
+2025-12-23 17:41:00,789 [INFO] _gather_kubeconfigs: Kubeconfig gathering complete: 3/8 targets valid
+2025-12-23 17:41:00,789 [INFO] _build_merged_config: Building merged kubeconfig from 3 targets
+2025-12-23 17:41:00,838 [INFO] _build_merged_config: Saved merged kubeconfig to /home/akingston/.kube/helmet/merged.yaml
+2025-12-23 17:42:40,011 [CRITICAL] configure_logging: 
+    __  __     __               __     __       ___   ____ ___   ______  ______    ___  _____    ______     ________        __ __ ___           __ __  ____ 
+   / / / /__  / /___ ___  ___  / /_    \ \     |__ \ / __ \__ \ / ____/ <  /__ \  |__ \|__  /   / ____ \   <  /__  /  _    / // /|__ \    _    / // / / __ \
+  / /_/ / _ \/ / __ `__ \/ _ \/ __/     \ \    __/ // / / /_/ //___ \   / /__/ /  __/ / /_ <   / / __ `/   / /  / /  (_)  / // /___/ /   (_)  / // /_/ / / /
+ / __  /  __/ / / / / / /  __/ /_       / /   / __// /_/ / __/____/ /_ / // __/_ / __/___/ /  / / /_/ /   / /  / /  _    /__  __/ __/   _    /__  __/ /_/ / 
+/_/ /_/\___/_/_/ /_/ /_/\___/\__/      /_/   /____/\____/____/_____/(_)_//____(_)____/____/   \ \__,_/   /_/  /_/  (_)     /_/ /____/  (_)     /_/  \____/  
+                                                                                               \____/                                                       
+
+2025-12-23 17:42:40,011 [CRITICAL] configure_logging:  :::::::::::: Logging started at 2025.12.23 @ 17 : 42 : 40 - Level: DEBUG
+2025-12-23 17:42:40,022 [DEBUG] _poll_range: Range poll requested for 10.10.0.31-10.10.0.131 (canary: 10.10.0.20)
+2025-12-23 17:42:40,023 [INFO] _poll_range: Canary check succeeded for 10.10.0.20, scanning range 10.10.0.31-10.10.0.131
+2025-12-23 17:42:40,023 [INFO] _poll_range: Range --> 10.10.0.{31..131}
+2025-12-23 17:42:46,072 [INFO] _poll_range: Output --> 
+2025-12-23 17:42:46,072 [INFO] _poll_range: Range scan complete: 0 live IPs found
+2025-12-23 17:42:47,124 [INFO] _gather_kubeconfigs: Gathering kubeconfigs from 8 targets
+2025-12-23 17:42:47,127 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from dark-helmet-local (dark-helmet@10.10.0.20)
+2025-12-23 17:42:47,129 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from schwartz-nightly (schwartz@10.30.1.105)
+2025-12-23 17:42:47,132 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from lonestarr (lonestarr@10.30.1.100)
+2025-12-23 17:42:47,135 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from schwartz-adhoc (schwartz@10.30.1.118)
+2025-12-23 17:42:47,138 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from sandurz-nightly (sandurz@10.30.1.110)
+2025-12-23 17:42:47,141 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from sandurz-stable (sandurz@10.30.1.112)
+2025-12-23 17:42:47,143 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from mr-rental-nightly (sandurz@10.30.1.114)
+2025-12-23 17:42:47,146 [DEBUG] _fetch_kubeconfig: Fetching kubeconfig from mr-rental-stable (sandurz@10.30.1.116)
+2025-12-23 17:42:47,294 [WARNING] _fetch_kubeconfig: SSH command failed for lonestarr: returncode=255
+2025-12-23 17:42:47,295 [WARNING] _gather_kubeconfigs: Target lonestarr failed kubeconfig check
+2025-12-23 17:42:47,307 [WARNING] _fetch_kubeconfig: SSH command failed for schwartz-adhoc: returncode=255
+2025-12-23 17:42:47,308 [WARNING] _gather_kubeconfigs: Target schwartz-adhoc failed kubeconfig check
+2025-12-23 17:42:47,313 [WARNING] _fetch_kubeconfig: SSH command failed for mr-rental-nightly: returncode=255
+2025-12-23 17:42:47,313 [WARNING] _gather_kubeconfigs: Target mr-rental-nightly failed kubeconfig check
+2025-12-23 17:42:47,319 [WARNING] _fetch_kubeconfig: SSH command failed for sandurz-stable: returncode=255
+2025-12-23 17:42:47,320 [WARNING] _gather_kubeconfigs: Target sandurz-stable failed kubeconfig check
+2025-12-23 17:42:47,321 [WARNING] _fetch_kubeconfig: SSH command failed for mr-rental-stable: returncode=255
+2025-12-23 17:42:47,321 [WARNING] _gather_kubeconfigs: Target mr-rental-stable failed kubeconfig check
+2025-12-23 17:42:48,310 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from dark-helmet-local
+2025-12-23 17:42:48,316 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/dark-helmet-local.yaml
+2025-12-23 17:42:48,316 [INFO] _gather_kubeconfigs: Target dark-helmet-local has valid k0s installation
+2025-12-23 17:42:48,318 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/dark-helmet-local.yaml
+2025-12-23 17:42:48,536 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from sandurz-nightly
+2025-12-23 17:42:48,541 [WARNING] _fetch_kubeconfig: Dummy IP 10.11.0.19 found, replacing with 10.30.1.110
+2025-12-23 17:42:48,544 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/sandurz-nightly.yaml
+2025-12-23 17:42:48,544 [INFO] _fetch_kubeconfig: Successfully retrieved kubeconfig from schwartz-nightly
+2025-12-23 17:42:48,549 [INFO] _gather_kubeconfigs: Target sandurz-nightly has valid k0s installation
+2025-12-23 17:42:48,549 [INFO] _fetch_kubeconfig: Saved kubeconfig to /home/akingston/.kube/helmet/schwartz-nightly.yaml
+2025-12-23 17:42:48,549 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/sandurz-nightly.yaml
+2025-12-23 17:42:48,549 [INFO] _gather_kubeconfigs: Target schwartz-nightly has valid k0s installation
+2025-12-23 17:42:48,550 [INFO] _gather_kubeconfigs: Saved kubeconfig to /home/akingston/.kube/helmet/schwartz-nightly.yaml
+2025-12-23 17:42:48,553 [INFO] _gather_kubeconfigs: Kubeconfig gathering complete: 3/8 targets valid
+2025-12-23 17:42:48,553 [INFO] _build_merged_config: Building merged kubeconfig from 3 targets
+2025-12-23 17:42:48,603 [INFO] _build_merged_config: Saved merged kubeconfig to /home/akingston/.kube/helmet/merged.yaml
