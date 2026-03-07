@@ -28,7 +28,7 @@ alias ll="eza --time-style=long-iso -l --changed"
 
 # k9s proper loading 
 load_k9s() {
-    man_dir="/opt/helmet/.kube/k0s/merged.yaml"
+    man_dir="$HOME/.kube/helmet/merged.yaml"
     context=$(kubectl --kubeconfig $man_dir config get-contexts | awk '{print $2}' | sed -n '2 p')
     k9s --kubeconfig $man_dir --context $context --command contexts --headless
 }
