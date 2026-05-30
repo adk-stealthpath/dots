@@ -2,8 +2,6 @@ local awful = require("awful")
 local naughty = require("naughty")
 local gears = require("gears")
 local hotkeys_popup = require("awful.hotkeys_popup")
-local tz = require("timezone")
--- local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -50,24 +48,6 @@ globalkeys = gears.table.join(
             end
         end,
         {description = "go back", group = "client"}),
-    awful.key({ modkey, "Shift" }, "s",
-    function(c)
-        -- Center a 2560x1440 window (or 1920x1080 if you prefer)
-        local screen_geo = c.screen.workarea
-        local share_width = 2560
-        local share_height = 1440
-        
-        c:geometry({
-            x = screen_geo.x + (screen_geo.width - share_width) / 2,
-            y = screen_geo.y + (screen_geo.height - share_height) / 2,
-            width = share_width,
-            height = share_height
-        })
-        c.floating = true
-        c:raise()
-    end,
-    {description = "snap to shareable size", group = "client"}),
-
     awful.key({ modkey, "Control" }, "s",
     function()
         if not _G.monitor_split then
@@ -124,23 +104,25 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Control", "Shift"   }, "q", awesome.quit,
               {description = "quit awesome", group = "awesome"}),
 
-    awful.key({ modkey, "Shift" }, "t", function() 
-        r = awful.spawn("/home/akingston/.config/rofi/launchers/type-1/timezone.sh")
-    end
-    ),
+    awful.key({ modkey, "Shift" }, "t", function()
+        awful.spawn("/home/akingston/.config/rofi/launchers/type-1/timezone.sh")
+    end, {description = "timezone picker", group = "launcher"}),
+
+   awful.key({ modkey }, "g",
+       function()
+           require("bar.bar").toggle_gpu()
+       end,
+       {description = "toggle GPU widget", group = "system"}),
 
    awful.key({ }, "XF86AudioRaiseVolume",
-       function() 
-           awful.spawn("amixer -c1 set 'Master',0 5%+")
-       end),
+       function() awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%") end,
+       {description = "volume up", group = "system"}),
    awful.key({ }, "XF86AudioLowerVolume",
-       function()
-           awful.spawn("amixer -c1 set 'Master',0 5%-")
-       end),
+       function() awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%") end,
+       {description = "volume down", group = "system"}),
    awful.key({ }, "XF86AudioMute",
-       function() 
-           awful.spawn("amixer -c1 set 'Master',0 0%")
-       end),
+       function() awful.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle") end,
+       {description = "toggle mute", group = "system"}),
    -- Brightness up
    awful.key({ }, "XF86MonBrightnessUp",
        function ()
@@ -161,15 +143,6 @@ globalkeys = gears.table.join(
 	function () awful.spawn("/home/akingston/.config/rofi/launchers/type-1/logout.sh") end,
     {description = "lock screen", group = "awesome"}),
 
-    -- awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
-    --          {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
-              {description = "decrease master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
-              {description = "increase the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
-              {description = "increase the number of columns", group = "layout"}),
-
     awful.key({ modkey, "Control" }, "n",
               function ()
                   local c = awful.client.restore()
@@ -186,14 +159,26 @@ globalkeys = gears.table.join(
     awful.key({ modkey },"space", function () awful.spawn("/home/akingston/.config/rofi/launchers/type-1/launcher.sh") end,
               {description = "run prompt", group = "launcher"}),
     awful.key({ modkey, "Shift" }, "q", function () awful.spawn("/home/akingston/.config/rofi/powermenu/type-1/powermenu.sh") end,
-              {description = "run powermenu", group = "menu"}),
+              {description = "run powermenu", group = "menu"})
 
-    -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
 )
 
 clientkeys = gears.table.join(
+    awful.key({ modkey, "Shift" }, "s",
+        function (c)
+            local screen_geo = c.screen.workarea
+            local share_width = 2560
+            local share_height = 1440
+            c:geometry({
+                x = screen_geo.x + (screen_geo.width - share_width) / 2,
+                y = screen_geo.y + (screen_geo.height - share_height) / 2,
+                width = share_width,
+                height = share_height
+            })
+            c.floating = true
+            c:raise()
+        end,
+        {description = "snap to shareable size", group = "client"}),
     awful.key({ modkey,           }, "f",
         function (c)
             c.fullscreen = not c.fullscreen

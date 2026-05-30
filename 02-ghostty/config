@@ -12,7 +12,7 @@ cursor-style = block
 font-size = 12
 font-family = DejaVuSansM Nerd Font
 fullscreen = false
-background-opacity = 0.85
+background-opacity = 0.75
 
 # full screen for terminal
 window-height = 80

@@ -35,21 +35,31 @@ load_k9s() {
 
 alias ks="load_k9s"
 
+source $HOME/.config/zsh/build_container.sh
 alias bc=build
 
-build() {
-    domain=$1
-    if [[ -z $domain ]]; then
-        domain="zot.adk"
-    fi
-    TAG=$domain.stealthpathdev.com/images/$(basename `pwd`):latest
-    echo "=====> TAG=$TAG <====="
-    echo ""
-    podman build -t $TAG -f Dockerfile ~/stealthpath/zcore
-    podman push $TAG
-    cosign sign -y --tlog-upload=false --key awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key $TAG
-    cosign verify --insecure-ignore-tlog --key awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key $TAG
+function helmet-merge() {
+  local helmet_kubeconfig="${HELMET_KUBECONFIG:-$HOME/.kube/helmet/merged.yaml}"
+  local tmp_dir
+
+  tmp_dir=$(mktemp -d) || { echo "Failed to create temp dir" >&2; return 1 }
+
+  helmet || { echo "helmet failed" >&2; rm -rf "$tmp_dir"; return 1 }
+
+  sudo podman exec k0s cat /var/lib/k0s/pki/admin.conf > "$tmp_dir/podman.yaml" 2>/dev/null \
+    || { echo "Failed to retrieve k0s kubeconfig" >&2; rm -rf "$tmp_dir"; return 1 }
+
+  KUBECONFIG="${helmet_kubeconfig}:${tmp_dir}/podman.yaml" \
+    kubectl config view --flatten > "$tmp_dir/merged.yaml" \
+    || { echo "Merge failed" >&2; rm -rf "$tmp_dir"; return 1 }
+
+  mv "$tmp_dir/merged.yaml" "$helmet_kubeconfig"
+  rm -rf "$tmp_dir"
+
+  echo "Merged kubeconfig written to $helmet_kubeconfig"
 }
+
+alias h="helmet-merge"
 
 # alias schwartz-argo='export -f kubectl; find $HOME/stealthpath/schwartz/argo-workflow-templates -path "*/archive" -prune -o -type f -name "*.yaml" -print0 | xargs -0 -I{} bash -c '\''CONTENT=$(sed "s|__SUBJECT_CN__|schwartz.spc.sp|g" "{}"); if [ -n "$CONTENT" ]; then echo "$CONTENT" | kubectl apply -f -; else echo "Skipping empty file: {}"; fi'\'''
 schwartz_argo() {
@@ -101,6 +111,5 @@ kubectl() {
 
 alias k="kubectl"
 
-# temporary
-alias R="ssh sandurz@10.10.0.71 \"sudo systemctl restart sandurz-api.service\""
-alias m="ssh sandurz@10.10.0.71 \"journalctl -u sandurz-api.service --no-pager -f\""
+# claude code environment
+source $HOME/.config/zsh/claude.sh

@@ -21,6 +21,8 @@ verify_yubikey() {
 build() {
     domain=$1
     tag=$2
+    src=$3
+    awskms="awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key"
     if [[ -z $domain ]]; then
         domain="zot.adk.stealthpathdev.com/images"
     elif [[ $domain != "239829075165.dkr.ecr.us-east-1.amazonaws.com" ]]; then
@@ -30,8 +32,10 @@ build() {
     if [[ -z $tag ]]; then
         tag=latest
     fi
-    git rev-parse --show-toplevel
-    src=$(git rev-parse --show-toplevel)
+
+    if [[ -z $src ]]; then
+        src=$(git rev-parse --show-toplevel)
+    fi
 
     TAG=$domain/$(basename `pwd`):$tag
     # TAG=$domain/$(basename `pwd`):$tag
@@ -49,9 +53,9 @@ build() {
 #        fi
 #    fi
 
-    podman build -t $TAG -f Dockerfile $src
-    podman push $TAG
-    cosign sign -y --tlog-upload=false --key awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key $TAG
-    cosign verify --insecure-ignore-tlog --key awskms:///arn:aws:kms:us-east-1:239829075165:alias/eagle5-cosign-key $TAG
+    podman build -t $TAG -f Dockerfile $src --progress=plain && \
+    podman push $TAG && \
+    cosign sign -y --tlog-upload=false --key $awskms $TAG && \
+    _digest=$(cosign verify --insecure-ignore-tlog --key $awskms $TAG | jq '.[0].critial.image."docker-manifest-digest"' -r)
 }
 

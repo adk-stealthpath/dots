@@ -3,23 +3,11 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      -- Register custom cypher parser
-      local parsers = require('nvim-treesitter.parsers')
-      parsers.cypher = {
-        install_info = {
-          url = vim.fn.expand('~/.local/share/nvim/tree-sitter-cypher'),
-          files = { "src/parser.c" },
-          generate_requires_npm = false,
-          requires_generate_from_grammar = false,
-        },
-        filetype = "cypher",
-      }
-
       require('nvim-treesitter').setup()
 
       -- Install parsers
       require('nvim-treesitter.install').install({
-        'c', 'lua', 'rust', 'go', 'python', 'typescript', 'cypher'
+        'c', 'lua', 'rust', 'go', 'python', 'typescript', 'cypher', 'templ'
       })
 
       -- Enable highlighting via autocmd with filesize guard

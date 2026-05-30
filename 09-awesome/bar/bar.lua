@@ -3,7 +3,6 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 local gears = require("gears")
 local naughty = require("naughty")
-local current_timezone = require("keys/bindings")
 local tz = require("timezone")
 
 -- Everforest theme colors
@@ -26,7 +25,7 @@ local colors = {
 }
 
 local M = {}
-
+local gpu_container  -- set during right section creation, used by toggle
 
 -- Helper function to create rounded containers with opacity
 local function create_container(widget, bg_color, fg_color)
@@ -88,6 +87,7 @@ local function create_left_section(s)
                     {
                         id = 'text_role',
                         widget = wibox.widget.textbox,
+                        ellipsize = "end",
                     },
                     left = 8,
                     right = 8,
@@ -108,7 +108,7 @@ local function create_left_section(s)
             awful.button({}, 1, function(t) t:view_only() end)
         ),
         style = {
-            fg_focus = colors.text,
+            fg_focus = colors.base,
             bg_focus = colors.iris,
             fg_occupied = colors.subtle,
             bg_occupied = colors.highlight_med,
@@ -136,10 +136,16 @@ local function create_left_section(s)
         },
     }
 
+    local title_max_width = math.floor(s.geometry.width * 0.35)
     local left_section = wibox.widget {
         {
             taglist,
-            window_title,
+            {
+                window_title,
+                strategy = "max",
+                width = title_max_width,
+                widget = wibox.container.constraint,
+            },
             spacing = 12,
             layout = wibox.layout.fixed.horizontal
         },
@@ -155,8 +161,6 @@ local function create_center_section()
     local datetime_widget = wibox.widget.textbox()
     
     local function update_datetime()
-        -- Use bash -c to properly handle the TZ environment variable
-        v = string.format("", tz.get_timezone())
         local cmd = {"bash", "-c", "date '+%a %d %b, %H:%M:%S [%Z]'"}
         awful.spawn.easy_async(cmd, function(stdout, stderr, exitreason, exitcode)
             if stdout and stdout:match("%S") and exitcode == 0 then
@@ -194,48 +198,105 @@ local function create_center_section()
     
     -- Create the center widget container first
     local center_widget = wibox.widget {
-        {
-            datetime_widget,
-            layout = wibox.layout.fixed.horizontal
-        },
-        widget = wibox.container.margin
+        datetime_widget,
+        layout = wibox.layout.fixed.horizontal
     }
     
-    return create_container(center_widget, colors.surface, colors.text)
+    local c = create_container(center_widget, colors.surface, colors.text)
+    c.forced_height = 36
+    return c
 end
 
 -- Right section widgets
 local function create_right_section()
-    -- Volume widgt
-     local volume_widget = wibox.widget.textbox()
-     local function update_vol()
-        awful.spawn.with_line_callback('bash -c "awk -F\"[][]\" \'/dB/ { print $2 }\' <(amixer)"', {
-            stdout = function(line)
-                volume_widget:set_markup(string.format('<span foreground="%s"> %s</span>', colors.text, line))
-            end,
-            stderr = function(line)
-                naughty.notify({title = "Failed to retrieve current volume level", text = "[Err]: "..line})
-            end
-        })
-     end
- 
-     gears.timer {
-         timeout = 0.5,
-         call_now = true,
-         autostart = true,
-         callback = update_vol
-     }
+    -- Volume widget
+    local volume_widget = wibox.widget.textbox()
+    local function update_vol()
+        awful.spawn.easy_async("pactl get-sink-volume @DEFAULT_SINK@", function(vol_out)
+            awful.spawn.easy_async("pactl get-sink-mute @DEFAULT_SINK@", function(mute_out)
+                local vol = vol_out:match("(%d+)%%")
+                local muted = mute_out:match("Mute: yes") ~= nil
+                if vol then
+                    local icon = muted and "" or ""
+                    local color = muted and colors.muted or colors.text
+                    volume_widget:set_markup(string.format(
+                        '<span foreground="%s">%s %s%%</span>', color, icon, vol))
+                end
+            end)
+        end)
+    end
+
+    gears.timer {
+        timeout = 0.5,
+        call_now = true,
+        autostart = true,
+        callback = update_vol
+    }
 
     -- Battery widget
     local battery_widget = wibox.widget.textbox()
+    local battery_path = "/sys/class/power_supply/BAT0"
+
+    local function read_battery_file(name)
+        local h = io.open(battery_path .. "/" .. name, "r")
+        if not h then return nil end
+        local line = h:read("*l")
+        h:close()
+        return line
+    end
+
+    local battery_tooltip = awful.tooltip {
+        objects = { battery_widget },
+        timer_function = function()
+            local status = read_battery_file("status") or "Unknown"
+            local power = tonumber(read_battery_file("power_now"))
+                or tonumber(read_battery_file("current_now"))
+            local energy_now = tonumber(read_battery_file("energy_now"))
+                or tonumber(read_battery_file("charge_now"))
+            local energy_full = tonumber(read_battery_file("energy_full"))
+                or tonumber(read_battery_file("charge_full"))
+
+            if status == "Full" then
+                return "Battery full"
+            end
+
+            if not power or power == 0 or not energy_now or not energy_full then
+                return status
+            end
+
+            local hours, label
+            if status == "Charging" then
+                hours = (energy_full - energy_now) / power
+                label = "Time to full"
+            elseif status == "Discharging" then
+                hours = energy_now / power
+                label = "Time to empty"
+            else
+                return status
+            end
+
+            local h = math.floor(hours)
+            local m = math.floor((hours - h) * 60 + 0.5)
+            return string.format("%s: %dh %02dm", label, h, m)
+        end,
+        timeout = 5,
+        margin_leftright = 10,
+        margin_topbottom = 6,
+        bg = colors.surface,
+        fg = colors.text,
+        border_color = colors.highlight_high,
+        border_width = 1,
+        shape = function(cr, width, height)
+            gears.shape.rounded_rect(cr, width, height, 6)
+        end,
+    }
+
     local function update_battery()
-        -- Try multiple battery paths
-        local path = "/sys/class/power_supply/BAT0"
-        
-        awful.spawn.easy_async("cat " .. path .. "/capacity 2>/dev/null", function(capacity)
+        awful.spawn.easy_async("cat " .. battery_path .. "/capacity 2>/dev/null", function(capacity)
             local cap = tonumber(capacity) or 0
-            awful.spawn.easy_async("cat " .. path .. "/status 2>/dev/null", function(status)
+            awful.spawn.easy_async("cat " .. battery_path .. "/status 2>/dev/null", function(status)
                 status = status:gsub("\n", "")
+                local status_icon, color
                 if status == "Charging" or status == "Not charging" then
                     status_icon = "󰂄"
                     color = colors.foam
@@ -243,13 +304,13 @@ local function create_right_section()
                     status_icon = "󰁹"
                     color = colors.iris
                 elseif status == "Discharging" then
-                    if cap > 60 then 
+                    if cap > 60 then
                         status_icon = "󰁾"
                         color = colors.iris
                     elseif cap > 30 then
                         status_icon = "󰁼"
                         color = colors.gold
-                    else 
+                    else
                         status_icon = "󰁺"
                         color = colors.rose
                     end
@@ -312,22 +373,31 @@ local function create_right_section()
         callback = update_vpn
     }
 
-    -- CPU widget
+    -- CPU widget (delta-based for instantaneous usage)
     local cpu_widget = wibox.widget.textbox()
+    local cpu_last = nil
     local function update_cpu()
         awful.spawn.easy_async("grep 'cpu ' /proc/stat", function(stdout)
-            local user, nice, system, idle = stdout:match("cpu%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)")
-            if user and nice and system and idle then
-                local total = user + nice + system + idle
-                local usage = math.floor(((total - idle) / total) * 100)
-                local color = usage > 80 and colors.love or (usage > 50 and colors.gold or colors.foam)
-                cpu_widget:set_markup(string.format('<span foreground="%s">💻 %d%%</span>', color, usage))
+            local u, n, s, idle, iowait, irq, sirq =
+                stdout:match("cpu%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)")
+            if u then
+                local total  = u + n + s + idle + iowait + irq + sirq
+                local active = total - idle - iowait
+                if cpu_last then
+                    local dt = total  - cpu_last.total
+                    local da = active - cpu_last.active
+                    local usage = dt > 0 and math.floor((da / dt) * 100) or 0
+                        local color = usage > 80 and colors.love or (usage > 50 and colors.gold or colors.foam)
+                    cpu_widget:set_markup(string.format(
+                        '<span foreground="%s"> %d%%</span>', color, usage))
+                end
+                cpu_last = { total = total, active = active }
             else
-                cpu_widget:set_markup('<span foreground="' .. colors.muted .. '">💻 --</span>')
+                cpu_widget:set_markup('<span foreground="' .. colors.muted .. '"> --</span>')
             end
         end)
     end
-    
+
     gears.timer {
         timeout = 3,
         call_now = true,
@@ -338,20 +408,20 @@ local function create_right_section()
     -- Memory widget
     local memory_widget = wibox.widget.textbox()
     local function update_memory()
-        awful.spawn.easy_async("cat /proc/meminfo", function(stdout)
-            local total = stdout:match("MemTotal:%s*(%d+)") or 0
-            local available = stdout:match("MemAvailable:%s*(%d+)") or 0
-            if total > 0 and available > 0 then
-                local used = total - available
-                local usage = math.floor((used / total) * 100)
-                local color = usage > 80 and colors.love or (usage > 50 and colors.gold or colors.foam)
-                memory_widget:set_markup(string.format('<span foreground="%s">🧠 %d%%</span>', color, usage))
+        awful.spawn.easy_async("grep -E 'MemTotal|MemAvailable' /proc/meminfo", function(stdout)
+            local total     = tonumber(stdout:match("MemTotal:%s*(%d+)"))
+            local available = tonumber(stdout:match("MemAvailable:%s*(%d+)"))
+            if total and available and total > 0 then
+                local usage = math.floor(((total - available) / total) * 100)
+                local color = usage > 80 and colors.love or (usage > 50 and colors.rose or colors.pine)
+                memory_widget:set_markup(string.format(
+                    '<span foreground="%s"> %d%%</span>', color, usage))
             else
-                memory_widget:set_markup('<span foreground="' .. colors.muted .. '">🧠 --</span>')
+                memory_widget:set_markup('<span foreground="' .. colors.muted .. '"> --</span>')
             end
         end)
     end
-    
+
     gears.timer {
         timeout = 5,
         call_now = true,
@@ -359,7 +429,46 @@ local function create_right_section()
         callback = update_memory
     }
 
+    -- GPU widget (hidden by default, toggled via keybinding)
+    local gpu_widget = wibox.widget.textbox()
+    local function update_gpu()
+        awful.spawn.easy_async(
+            "nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits",
+            function(stdout)
+                local util, mem_used, mem_total = stdout:match("(%d+),%s*(%d+),%s*(%d+)")
+                if util then
+                    util     = tonumber(util)
+                    mem_used = tonumber(mem_used)
+                    local vram = mem_used >= 1024
+                        and string.format("%.1fG", mem_used / 1024)
+                        or  string.format("%dM",   mem_used)
+                    local color = util > 80 and colors.love or (util > 50 and colors.gold or colors.iris)
+                    gpu_widget:set_markup(string.format(
+                        '<span foreground="%s"> %d%%  %s</span>', color, util, vram))
+                else
+                    gpu_widget:set_markup('<span foreground="' .. colors.muted .. '"> --</span>')
+                end
+            end
+        )
+    end
+
+    gears.timer {
+        timeout   = 5,
+        call_now  = true,
+        autostart = true,
+        callback  = update_gpu,
+    }
+
+    gpu_container = wibox.widget {
+        gpu_widget,
+        visible = false,
+        widget  = wibox.container.background,
+    }
+
     local right_section = wibox.widget {
+        gpu_container,
+        cpu_widget,
+        memory_widget,
         volume_widget,
         battery_widget,
         network_widget,
@@ -395,24 +504,35 @@ function M.create_wibar(s)
     local right_widget = create_right_section()
 
     s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
+        layout = wibox.layout.stack,
+        -- Layer 1: left and right sections
         {
-            left_widget,
-            layout = wibox.layout.fixed.horizontal
-        },
-        {
+            layout = wibox.layout.align.horizontal,
+            {
+                left_widget,
+                layout = wibox.layout.fixed.horizontal
+            },
             nil,
+            {
+                nil,
+                right_widget,
+                layout = wibox.layout.align.horizontal
+            },
+        },
+        -- Layer 2: clock pinned to the absolute centre of the bar
+        {
             center_widget,
-            nil,
-            expand = "none",
-            layout = wibox.layout.align.horizontal
-        },
-        {
-            nil,
-            right_widget,
-            layout = wibox.layout.align.horizontal
+            halign = "center",
+            valign = "center",
+            widget = wibox.container.place,
         },
     }
+end
+
+function M.toggle_gpu()
+    if gpu_container then
+        gpu_container.visible = not gpu_container.visible
+    end
 end
 
 return M

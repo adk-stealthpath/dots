@@ -2,84 +2,75 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 
+-- Width reserved for the left sidebar (see bar/sidebar.lua). awesome's wibar
+-- already shrinks p.workarea, but we subtract again explicitly so the splits
+-- are correct even if the wibar's strut hasn't been propagated yet (e.g., on
+-- first arrange after restart).
+local SIDEBAR_WIDTH = 240
+
 -- Define your custom layout
 local custom_layout = {}
 custom_layout.name = "custom_split"
 
 function custom_layout.arrange(p)
-    local area = p.workarea
     local clients = p.clients
     local n = #clients
-    
     if n == 0 then return end
-    
+
+    -- Compute usable area: workarea minus the sidebar reservation.
+    -- If the sidebar has already trimmed the workarea, this is a no-op
+    -- (we detect by comparing workarea.x to the screen geometry x).
+    local wa = p.workarea
+    local sg = p.geometry
+    local area = { x = wa.x, y = wa.y, width = wa.width, height = wa.height }
+    if sg and wa.x == sg.x then
+        -- workarea hasn't accounted for sidebar yet; subtract manually.
+        area.x = wa.x + SIDEBAR_WIDTH
+        area.width = wa.width - SIDEBAR_WIDTH
+    end
+
     if n == 1 then
-        -- Single window: middle half of screen
+        -- Single window: middle half of usable area
         local width = area.width * 0.5
-        local x = area.x + (area.width * 0.25)  -- Center it
-        
-        local g = {
-            x = x,
-            y = area.y,
-            width = width,
-            height = area.height
+        local x = area.x + (area.width * 0.25)
+        p.geometries[clients[1]] = {
+            x = x, y = area.y, width = width, height = area.height,
         }
-        p.geometries[clients[1]] = g
-        
+
     elseif n == 2 then
         -- Two windows: 2/3 and 1/3 split
-        local g1 = {
-            x = area.x,
-            y = area.y,
-            width = area.width * (2/3),
-            height = area.height
+        p.geometries[clients[1]] = {
+            x = area.x, y = area.y,
+            width = area.width * (2/3), height = area.height,
         }
-        local g2 = {
-            x = area.x + (area.width * (2/3)),
-            y = area.y,
-            width = area.width * (1/3),
-            height = area.height
+        p.geometries[clients[2]] = {
+            x = area.x + (area.width * (2/3)), y = area.y,
+            width = area.width * (1/3), height = area.height,
         }
-        p.geometries[clients[1]] = g1
-        p.geometries[clients[2]] = g2
-        
+
     elseif n == 3 then
         -- Three windows: 1/4, 1/2, 1/4 split
-        local g1 = {
-            x = area.x,
-            y = area.y,
-            width = area.width * 0.25,
-            height = area.height
+        p.geometries[clients[1]] = {
+            x = area.x, y = area.y,
+            width = area.width * 0.25, height = area.height,
         }
-        local g2 = {
-            x = area.x + (area.width * 0.25),
-            y = area.y,
-            width = area.width * 0.5,
-            height = area.height
+        p.geometries[clients[2]] = {
+            x = area.x + (area.width * 0.25), y = area.y,
+            width = area.width * 0.5, height = area.height,
         }
-        local g3 = {
-            x = area.x + (area.width * 0.75),
-            y = area.y,
-            width = area.width * 0.25,
-            height = area.height
+        p.geometries[clients[3]] = {
+            x = area.x + (area.width * 0.75), y = area.y,
+            width = area.width * 0.25, height = area.height,
         }
-        p.geometries[clients[1]] = g1
-        p.geometries[clients[2]] = g2
-        p.geometries[clients[3]] = g3
-        
+
     else
-        -- For 4+ windows, you can either tile them however you want
-        -- or fall back to awful.layout.suit.tile
-        -- Here's a simple equal split as fallback:
+        -- 4+: equal horizontal split across usable area
         local width = area.width / n
         for i, c in ipairs(clients) do
-            local g = {
-                x = area.x + ((i-1) * width),
-                y = area.y,
-                width = width,
-                height = area.height
+            p.geometries[c] = {
+                x = area.x + ((i - 1) * width), y = area.y,
+                width = width, height = area.height,
             }
-            p.geometries[c] = g
         end
     end
 end

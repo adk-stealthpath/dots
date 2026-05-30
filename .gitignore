@@ -3,3 +3,10 @@
 *zsh/.zcompdump*
 *tmux/tpm
 *tmux/plugins
+
+# generated / volatile / sensitive — should never have been tracked
+.zsh_history
+*.zsh_history
+*.log
+*.bak
+*.jpg.[0-9]

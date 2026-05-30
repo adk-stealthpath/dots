@@ -21,9 +21,10 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 require("awful.hotkeys_popup.keys")
 
 require("theme/theme")
-local wibar = require("bar.bar")
+-- local wibar = require("bar.bar")  -- top wibar, replaced by left sidebar
+local sidebar = require("bar.sidebar")
 require("keys/bindings")
-require("layout/layout") 
+require("layout/layout")
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -46,6 +47,42 @@ do
                          text = tostring(err) })
         in_error = false
     end)
+end
+-- }}}
+
+-- {{{ Notification click-to-focus
+local function norm(s)
+    return (s or ""):lower():gsub("[^%a%d]", "")
+end
+
+local function client_for_appname(appname)
+    local app = norm(appname)
+    if #app == 0 then return nil end
+    for _, c in ipairs(client.get()) do
+        local cls  = norm(c.class)
+        local inst = norm(c.instance)
+        if cls:find(app, 1, true)  or app:find(cls,  1, true) or
+           inst:find(app, 1, true) or app:find(inst, 1, true) then
+            return c
+        end
+    end
+    return nil
+end
+
+naughty.config.notify_callback = function(args)
+    local appname = args.appname or ""
+    if appname ~= "" then
+        args.run = function()
+            local c = client_for_appname(appname)
+            if c then
+                local tag = c.first_tag
+                if tag then tag:view_only() end
+                client.focus = c
+                c:raise()
+            end
+        end
+    end
+    return args
 end
 -- }}}
 
@@ -116,8 +153,8 @@ awful.screen.connect_for_each_screen(function(s)
          buttons = tasklist_buttons
      }
 
-     -- Create the wibox
-     wibar.create_wibar(s)
+     -- Create the sidebar (left-anchored, replaces old top wibar)
+     sidebar.create_sidebar(s)
 end)
 -- }}}
 
@@ -130,11 +167,11 @@ root.buttons(mousebindings)
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
-    { 
+    {
         rule = { class = "helmet-float" },
-        properties = { 
+        properties = {
             floating = true,
-            placement = awful.placement.centered,
+            placement = awful.placement.top_left,
             width = 800,
             height = 600
         }
@@ -180,6 +217,20 @@ awful.rules.rules = {
             maximized = false,
             border_width = 0
         }
+    },
+    {
+        rule = { class = "memgraph-lab" },
+        callback = function(c)
+            c:connect_signal("property::maximized", function()
+                c.maximized = false
+            end)
+            c:connect_signal("property::maximized_vertical", function()
+                c.maximized_vertical = false
+            end)
+            c:connect_signal("property::maximized_horizontal", function()
+                c.maximized_horizontal = false
+            end)
+        end
     }
 }
 -- }}}
@@ -209,12 +260,13 @@ end)
 -- }}}
 
 client.connect_signal("manage", function(c)
-    c.shape = function(cr, w, h)
-        gears.shape.rounded_rect(cr, w, h, 5)
+    if c.class ~= "ghostty" and c.class ~= "com.mitchellh.ghostty" then
+        c.shape = function(cr, w, h)
+            gears.shape.rounded_rect(cr, w, h, 5)
+        end
     end
 end)
 
 
-awful.spawn.with_shell("picom --config ~/.config/picom/picom.conf")
-awful.spawn.with_shell("pulseaudio --start")
+awful.spawn.with_shell("pkill -x picom; sleep 1 && picom --config ~/.config/picom/picom.conf &")
 awful.spawn.with_shell("autorandr --change")

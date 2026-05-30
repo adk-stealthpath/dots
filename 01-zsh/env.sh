@@ -34,4 +34,5 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 # k8s kubeconfig 
 export KUBECONFIG=/home/akingston/.kube/helmet/merged.yaml
 
-typeset -U PATH
+# Claude
+export CLAUDE_CONFIG_DIR="$HOME/.config/claude"
